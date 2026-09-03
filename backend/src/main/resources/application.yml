@@ -6,8 +6,8 @@ spring:
     name: revive-mesh-backend
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/revive_mesh}
-    username: ${DB_USER:revive_user}
-    password: ${DB_PASSWORD:revive_password}
+    username: revive_user
+    password: revive_password
   jpa:
     hibernate:
       ddl-auto: validate
