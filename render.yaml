@@ -38,7 +38,7 @@ services:
       - key: KAFKA_SECURITY_PROTOCOL
         value: SASL_SSL
       - key: KAFKA_SASL_MECHANISM
-        value: PLAIN
+        value: SCRAM-SHA-256
       - key: KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM
         value: https
       - key: KAFKA_USERNAME
