@@ -1,13 +1,14 @@
 server:
-  port: ${BACKEND_PORT:8080}
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  port: ${PORT:${BACKEND_PORT:8080}}
 
 spring:
   application:
     name: revive-mesh-backend
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/revive_mesh}
-    username: revive_user
-    password: revive_password
+    username: ${DATABASE_USERNAME:${DB_USER:revive_user}}
+    password: ${DATABASE_PASSWORD:${DB_PASSWORD:revive_password}}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -17,10 +18,16 @@ spring:
     baseline-on-migrate: true
   data:
     redis:
+      url: ${REDIS_URL:}
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+app:
+  intelligence-service-url: ${INTELLIGENCE_SERVICE_URL:http://localhost:8000}
 
 management:
   endpoints:

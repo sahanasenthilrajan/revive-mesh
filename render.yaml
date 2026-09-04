@@ -9,18 +9,35 @@ services:
         fromDatabase:
           name: revive-postgres
           property: connectionString
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: revive-postgres
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: revive-postgres
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: revive-redis
+          property: connectionString
       - key: REDIS_HOST
         fromService:
-          type: redis
+          type: keyvalue
           name: revive-redis
           property: host
       - key: REDIS_PORT
         fromService:
-          type: redis
+          type: keyvalue
           name: revive-redis
           property: port
       - key: KAFKA_BOOTSTRAP_SERVERS
-        value: revive-kafka:9092
+        sync: false
+      - key: INTELLIGENCE_SERVICE_URL
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
       - key: SPRING_PROFILES_ACTIVE
         value: prod
     healthCheckPath: /actuator/health
@@ -39,15 +56,13 @@ services:
     dockerContext: ./frontend
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: revive-backend
-          property: host
+        sync: false
+
+  - type: keyvalue
+    name: revive-redis
+    ipAllowList: []
 
 databases:
   - name: revive-postgres
     databaseName: revive_mesh
     user: revive_user
-
-  - name: revive-redis
-    type: redis

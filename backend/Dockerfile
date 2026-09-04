@@ -12,4 +12,4 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/backend-*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "case \"${DATABASE_URL:-}\" in postgresql://*|postgres://*) export SPRING_DATASOURCE_URL=\"jdbc:${DATABASE_URL}\";; esac; exec java -jar app.jar"]
