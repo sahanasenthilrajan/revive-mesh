@@ -34,6 +34,16 @@ services:
           name: revive-redis
           property: port
       - key: KAFKA_BOOTSTRAP_SERVERS
+        value: revive-kafka-senthilsahana7-9456.h.aivencloud.com:10345
+      - key: KAFKA_SECURITY_PROTOCOL
+        value: SASL_SSL
+      - key: KAFKA_SASL_MECHANISM
+        value: PLAIN
+      - key: KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM
+        value: https
+      - key: KAFKA_USERNAME
+        sync: false
+      - key: KAFKA_PASSWORD
         sync: false
       - key: INTELLIGENCE_SERVICE_URL
         fromService:
