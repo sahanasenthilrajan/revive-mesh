@@ -54,6 +54,7 @@ export default function Home() {
   const [swarms, setSwarms] = useState<FailureSwarm[]>([]);
   const [decisions, setDecisions] = useState<RecoveryDecision[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<number | null>(null);
+  const [scenarioResult, setScenarioResult] = useState<{ ok: boolean; message: string } | null>(null);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -87,15 +88,30 @@ export default function Home() {
 
   const runScenario = async (scenarioNum: number) => {
     setSelectedScenario(scenarioNum);
+    setScenarioResult(null);
     try {
       const res = await fetch(`${apiBase}/api/simulator/scenario/${scenarioNum}`, {
         method: "POST",
       });
       if (res.ok) {
+        const data = (await res.json()) as { status?: string; scenario?: string };
+        setScenarioResult({
+          ok: true,
+          message: `Scenario ${scenarioNum} complete: ${data.scenario ?? "Unknown"} (status: ${data.status ?? "unknown"})`,
+        });
         setTimeout(fetchDashboardData, 2000);
+      } else {
+        setScenarioResult({
+          ok: false,
+          message: `Scenario ${scenarioNum} failed (HTTP ${res.status}). Please try again.`,
+        });
       }
     } catch (error) {
       console.error(`Failed to run scenario ${scenarioNum}:`, error);
+      setScenarioResult({
+        ok: false,
+        message: `Scenario ${scenarioNum} failed: could not reach the backend. Check your connection and try again.`,
+      });
     } finally {
       setSelectedScenario(null);
     }
@@ -175,6 +191,19 @@ export default function Home() {
               loading={selectedScenario === 5}
             />
           </div>
+          {selectedScenario !== null ? (
+            <p className="mt-4 text-sm text-zinc-400">
+              Running Scenario {selectedScenario}...
+            </p>
+          ) : scenarioResult ? (
+            <p
+              className={`mt-4 text-sm ${
+                scenarioResult.ok ? "text-emerald-400" : "text-red-400"
+              }`}
+            >
+              {scenarioResult.message}
+            </p>
+          ) : null}
         </section>
 
         {/* Active Failure Swarms */}
