@@ -6,7 +6,7 @@ spring:
   application:
     name: revive-mesh-backend
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/revive_mesh}
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/revive_mesh}
     username: ${DATABASE_USERNAME:${DB_USER:revive_user}}
     password: ${DATABASE_PASSWORD:${DB_PASSWORD:revive_password}}
   jpa:
