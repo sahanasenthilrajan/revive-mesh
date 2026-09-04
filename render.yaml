@@ -1,0 +1,53 @@
+services:
+  - type: web
+    name: revive-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: revive-postgres
+          property: connectionString
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: revive-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: revive-redis
+          property: port
+      - key: KAFKA_BOOTSTRAP_SERVERS
+        value: revive-kafka:9092
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    healthCheckPath: /actuator/health
+
+  - type: web
+    name: revive-intelligence
+    runtime: docker
+    dockerfilePath: ./intelligence/Dockerfile
+    dockerContext: ./intelligence
+    healthCheckPath: /health
+
+  - type: web
+    name: revive-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: revive-backend
+          property: host
+
+databases:
+  - name: revive-postgres
+    databaseName: revive_mesh
+    user: revive_user
+
+  - name: revive-redis
+    type: redis
