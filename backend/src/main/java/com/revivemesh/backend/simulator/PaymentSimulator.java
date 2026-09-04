@@ -76,8 +76,11 @@ public class PaymentSimulator {
         log.info("Running SCENARIO 4: DO_NOTHING counterfactual winner");
         UUID merchantId = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
-        // High-friction failure: CARD_EXPIRED
-        emitPaymentFailure(merchantId, "CARD_EXPIRED", "GATEWAY_C", "BANK_Z", 3);
+        // High-friction, repeated-attempt micro-transaction: CARD_EXPIRED.
+        // The tiny amount makes every intervention's expected net value negative,
+        // so DO_NOTHING is the natural economic winner under the existing evaluator.
+        emitPaymentFailureWithAmount(merchantId, "CARD_EXPIRED", "GATEWAY_C", "BANK_Z", 5,
+            new BigDecimal("0.37"));
     }
 
     /**
